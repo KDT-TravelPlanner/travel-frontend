@@ -1,0 +1,19 @@
+name: Frontend CI and Main Deployment
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    uses: ./.github/workflows/verify.yml
+  deploy:
+    needs: verify
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/deploy-dev.yml
